@@ -1,10 +1,21 @@
 <script setup lang="ts">
-defineProps<{
+const props = defineProps<{
   image: string;
   status: 'closed' | 'opened' | 'matched';
   disabled?: boolean;
+  showHintMark: boolean;
 }>();
+
+const emit = defineEmits<{
+  hint: [image: string];
+  resetHints: void;
+}>();
+
+const handleHint = () => {
+  emit('hint', props.image);
+};
 </script>
+
 <template>
   <div
     class="card"
@@ -15,7 +26,9 @@ defineProps<{
     }"
   >
     <div class="card-inner">
-      <div class="card-face card-back"></div>
+      <div class="card-face card-back">
+        <div v-if="showHintMark" class="question-mark" @click.stop="handleHint">?</div>
+      </div>
       <div class="card-face card-front">
         <img :src="image" />
       </div>
@@ -30,6 +43,7 @@ defineProps<{
   cursor: pointer;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  position: relative;
 }
 
 .card-inner {
@@ -80,6 +94,21 @@ defineProps<{
 
 .card.disabled {
   pointer-events: none;
+}
+
+.card .question-mark {
+  border: solid #c044d9 1px;
+  color: #c044d9;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  cursor: pointer;
 }
 
 @media (max-width: 768px) {

@@ -5,6 +5,8 @@ import { images } from '../images.ts';
 import { shuffleCards } from './shuffleCards.ts';
 import type { Card } from '@/types.ts';
 
+type Hints = Record<number, number>;
+
 const CLOSE_TIMEOUT = 1000;
 const cards = ref<Card[]>([]);
 const moves = ref(0);
@@ -13,9 +15,27 @@ const matchedCards = ref(new Set<number>());
 const matches = computed(() => matchedCards.value.size / 2);
 const isGameWon = computed(() => matches.value === cards.value.length / 2);
 const isTwoCardsOpened = computed(() => openedCards.value.size === 2);
+const isHintShown = ref(false);
+const shownCard = ref('');
+const hintsCount = ref<Hints>({});
 
 const openCard = (index: number) => {
   openedCards.value.add(index);
+};
+
+const showHint = (index: number, image: string) => {
+  hintsCount.value = { ...hintsCount.value, [index]: (hintsCount.value[index] || 0) + 1 };
+  isHintShown.value = true;
+  shownCard.value = image;
+};
+
+const closeHint = () => {
+  isHintShown.value = false;
+  shownCard.value = '';
+};
+
+const resetHints = () => {
+  hintsCount.value = {};
 };
 
 const getStatus = (index: number) => {
@@ -46,6 +66,7 @@ const resetGame = () => {
   moves.value = 0;
   openedCards.value.clear();
   matchedCards.value.clear();
+  resetHints();
   cards.value = shuffleCards([...images, ...images]);
 };
 
@@ -66,7 +87,10 @@ resetGame();
         :image="card.image"
         :status="getStatus(index)"
         :disabled="isTwoCardsOpened"
+        :show-hint-mark="(hintsCount[index] || 0) < 2"
         @click="openCard(index)"
+        @hint="showHint(index, card.image)"
+        @reset-hints="resetHints"
       />
     </div>
     <button class="memory-game__btn" @click="resetGame">New game</button>
@@ -74,6 +98,13 @@ resetGame();
       Congratulations! You won in {{ moves }} moves!
     </div>
   </div>
+
+  <dialog v-if="isHintShown" class="memory-game__hint">
+    <img :src="shownCard" alt="Card preview" class="memory-game__hint-img" />
+    <form method="dialog">
+      <button class="memory-game__btn" @click="closeHint" type="button">Close</button>
+    </form>
+  </dialog>
 </template>
 
 <style scoped>
@@ -82,6 +113,7 @@ resetGame();
   margin: 0 auto;
   padding: 20px;
   text-align: center;
+  position: relative;
 }
 
 .memory-game__container {
@@ -107,7 +139,7 @@ resetGame();
   color: #34495e;
 }
 
-.game-info div {
+.memory-game__info div {
   font-size: 1.2rem;
   font-weight: bold;
   color: #34495e;
@@ -140,5 +172,28 @@ resetGame();
   .memory-game__container {
     grid-template-columns: repeat(3, 1fr);
   }
+}
+
+.memory-game__hint {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #8e44ad;
+  border-radius: 8px;
+  padding: 20px;
+  background-color: white;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.memory-game__hint-img {
+  max-width: 300px;
+  height: auto;
+  margin-bottom: 15px;
 }
 </style>
