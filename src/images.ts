@@ -3,38 +3,38 @@ import type { Card } from '@/types.ts';
 export const images: Card[] = [
   {
     name: 'cat',
-    image: '/src/components/icons/cat.svg',
+    image: './icons/cat.svg',
   },
   {
     name: 'chicken',
-    image: '/src/components/icons/chicken.svg',
+    image: './icons/chicken.svg',
   },
   {
     name: 'dog',
-    image: '/src/components/icons/dog.svg',
+    image: './icons/dog.svg',
   },
   {
     name: 'frog',
-    image: '/src/components/icons/frog.svg',
+    image: './icons/frog.svg',
   },
   {
     name: 'monkey',
-    image: '/src/components/icons/monkey.svg',
+    image: './icons/monkey.svg',
   },
   {
     name: 'parrot',
-    image: '/src/components/icons/parrot.svg',
+    image: './icons/parrot.svg',
   },
   {
     name: 'penguin',
-    image: '/src/components/icons/penguin.svg',
+    image: './icons/penguin.svg',
   },
   {
     name: 'rabbit',
-    image: '/src/components/icons/rabbit.svg',
+    image: './icons/rabbit.svg',
   },
   {
     name: 'turtle',
-    image: '/src/components/icons/turtle.svg',
+    image: './icons/turtle.svg',
   },
 ];
